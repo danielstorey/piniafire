@@ -1,0 +1,14 @@
+{
+  "name": "piniafire",
+  "version": "1.0.0",
+  "description": "Powerful utilities for syncing pinia stores with firebase",
+  "main": "index.js",
+  "repository": "https://github.com/danielstorey/piniafire",
+  "author": "Daniel Storey <danielstorey@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "firebase": "^9.9.4",
+    "lodash-es": "^4.17.21",
+    "pinia": "^2.0.22"
+  }
+}
