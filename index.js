@@ -1,6 +1,6 @@
-import { bind, unbind } from './lib/piniafire'
-import defineFirebaseStore from './lib/store';
-import piniafirePlugin from './lib/plugin';
+import { bind, unbind } from './lib/piniafire.js'
+import defineFirebaseStore from './lib/store.js';
+import piniafirePlugin from './lib/plugin.js';
 
 export {
   bind,
