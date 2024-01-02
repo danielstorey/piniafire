@@ -34,6 +34,7 @@ const storeOptions = {
 
 let db;
 let store = {};
+let storeWithLocalStorage = {};
 let lastId;
 let app;
 
@@ -52,7 +53,9 @@ beforeAll(async() => {
   app.use(pinia);
 
   const useStore = defineFirebaseStore(storeOptions);
+  const useStoreWithLocalStorage = defineFirebaseStore({ ...storeOptions, id: 'test-localstorage', localStorageFallbackKey: 'test' });
   store = useStore();
+  storeWithLocalStorage = useStoreWithLocalStorage();
 })
 
 
@@ -107,7 +110,6 @@ describe('firebaseStore', () => {
         expect(store.doc.testValue).toBe(100);
       });
     });
-
 
     describe('$getRef', () => {
       it('should return a document reference', async() => {
@@ -362,6 +364,38 @@ describe('firebaseStore', () => {
         expect(snapshot.exists()).toBe(false);
         expect(deleted).toBe(true);
         expect(store.doc.title).toBe('');
+      });
+    });
+
+    describe.only('localStorageFallback', () => {
+      it('should create a document reference in localstorage', async() => {
+        const doc = await storeWithLocalStorage.$create({ testValue: 100 });
+
+        expect(storeWithLocalStorage.testValue).toBe(100);
+        expect(doc.testValue).toBe(100);
+        expect(JSON.parse(localStorage.getItem('test')).testValue).toBe(100)
+      });
+
+      it('should fetch a document reference from localstorage', async() => {
+        await storeWithLocalStorage.$create({ testValue: 100 });
+
+        const doc = await storeWithLocalStorage.$fetch();
+
+        expect(storeWithLocalStorage.testValue).toBe(100);
+        expect(doc.testValue).toBe(100);
+        expect(JSON.parse(localStorage.getItem('test')).testValue).toBe(100)
+      });
+
+      it ('should update a document in localStorage', async() => {
+        await storeWithLocalStorage.$create({ testValue: 100 });
+
+        const doc = await storeWithLocalStorage.$fetch();
+
+        await storeWithLocalStorage.$update('testValue', 99, true);
+
+        expect(storeWithLocalStorage.testValue).toBe(99);
+        expect(doc.testValue).toBe(99);
+        expect(JSON.parse(localStorage.getItem('test')).testValue).toBe(99)
       });
     });
 
