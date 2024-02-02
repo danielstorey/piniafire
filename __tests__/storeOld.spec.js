@@ -13,7 +13,6 @@ async function getSnapshotById(id) {
 }
 
 const storeOptions = {
-  id: 'test',
   collectionName: 'testCollection',
   docSchema: object({
     title: string().ensure(),
@@ -44,16 +43,15 @@ beforeAll(async() => {
   setUserId('user');
   db = await getDB();
 
+  console.log(db);
+
   pinia = createPinia();
-  pinia.use(piniafirePlugin({
-    db
-  }))
 
   app = createApp();
   app.use(pinia);
 
-  const useStore = defineFirebaseStore(storeOptions);
-  const useStoreWithLocalStorage = defineFirebaseStore({ ...storeOptions, id: 'test-localstorage', localStorageFallbackKey: 'test' });
+  const useStore = defineFirebaseStore('test', { ...storeOptions, db });
+  const useStoreWithLocalStorage = defineFirebaseStore('test-localstorage', { ...storeOptions, db, localStorageFallbackKey: 'test' });
   store = useStore();
   storeWithLocalStorage = useStoreWithLocalStorage();
 })
@@ -77,7 +75,7 @@ afterAll(async() => {
 
 
 describe('firebaseStore', () => {
-  describe('initialize', () => {
+  describe.only('initialize', () => {
     it('should initialize with default values', async () => {
       expect(store.doc.testValue).toBe(50);
       expect(store.extraValue).toBe(200);
